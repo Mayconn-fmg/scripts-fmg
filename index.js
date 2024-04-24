@@ -21,8 +21,8 @@ async function main() {
   const port = args.port || '3000'; // Default to 3000 if no port is provided
 
   // Define paths
-  const zipPath = path.resolve(__dirname, `${appName}.zip`);
-  const appPath = path.resolve(__dirname, 'apps');
+  const zipPath = path.resolve(process.cwd(), `${appName}.zip`);
+  const appPath = path.resolve(process.cwd(), 'apps');
   const extractedFolderPath = path.resolve(appPath, 'default-app-with-routes');
   const newFolderPath = path.resolve(appPath, appName);
 
@@ -59,7 +59,7 @@ async function main() {
   // Create app-name.tsx
   const appComponentName = toPascalCase(appName);
   const appComponentPath = path.resolve(
-    __dirname,
+    process.cwd(),
     'apps',
     'platform',
     'src',
@@ -80,11 +80,11 @@ export default function ${appComponentName}() {
   fs.writeFileSync(appComponentPath, appComponentContent);
 
   // Append line to env.d.ts
-  const envPath = path.resolve(__dirname, 'apps', 'platform', 'src', 'env.d.ts');
+  const envPath = path.resolve(process.cwd(), 'apps', 'platform', 'src', 'env.d.ts');
   fs.appendFileSync(envPath, `\ndeclare module '${appName}/App';\n`);
 
   // Add a new route to App.tsx
-  const appTsxPath = path.resolve(__dirname, 'apps', 'platform', 'src', 'App.tsx');
+  const appTsxPath = path.resolve(process.cwd(), 'apps', 'platform', 'src', 'App.tsx');
   let appTsxContent = fs.readFileSync(appTsxPath, 'utf-8');
   const importStatement = `import ${appComponentName} from './routes/${appName}';\n`;
   appTsxContent = appTsxContent.replace(/(import .+;\n)(?!import)/g, `$1${importStatement}`);
@@ -100,7 +100,7 @@ export default function ${appComponentName}() {
   fs.writeFileSync(appTsxPath, appTsxContent);
 
   // Modify webpack.config.js
-  const webpackConfigPath2 = path.resolve(__dirname, 'apps', 'platform', 'webpack.config.js');
+  const webpackConfigPath2 = path.resolve(process.cwd(), 'apps', 'platform', 'webpack.config.js');
   let webpackConfig2 = fs.readFileSync(webpackConfigPath2, 'utf-8');
   const remotesIndex = webpackConfig2.indexOf('remotes: {');
   const closingBracketIndex2 = webpackConfig2.indexOf('}', remotesIndex);
